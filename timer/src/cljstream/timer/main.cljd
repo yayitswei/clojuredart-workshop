@@ -100,11 +100,13 @@
     (m/ListView .shrinkWrap true)
     .children
     (into [] (map-indexed (fn [idx st]
-                            (m/Dismissible
-                              .key (m/ValueKey st)
-                              .child (timer st)
-                              .onDismissed
-                              (fn [_]
-                                (swap! app-state
-                                  (fn [s]
-                                    (into (subvec s 0 idx) (subvec s (inc idx))))))))) as)))
+                            (if (< 1 (count as))
+                              (m/Dismissible
+                               .key (m/ValueKey st)
+                               .child (timer st)
+                               .onDismissed
+                               (fn [_]
+                                 (swap! app-state
+                                        (fn [s]
+                                          (into (subvec s 0 idx) (subvec s (inc idx)))))))
+                              (timer st)))) as)))
